@@ -1,0 +1,3 @@
+/Users/gustavskyberg/Home/Programming/algstruct-practices/practice-1/build/CMakeFiles/main.dir
+/Users/gustavskyberg/Home/Programming/algstruct-practices/practice-1/build/CMakeFiles/edit_cache.dir
+/Users/gustavskyberg/Home/Programming/algstruct-practices/practice-1/build/CMakeFiles/rebuild_cache.dir
