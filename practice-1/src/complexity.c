@@ -6,7 +6,7 @@
   ((c) < '0' || (c) > '9')
 
 //  this is o(n) because it iterates from 0 to n-1 once 
-int o(int n) {
+int foo(int n) {
   int t = 0;
   for (int i = 0; i < n; i++) {
     t++;
@@ -16,7 +16,7 @@ int o(int n) {
 
 //  this is o(n^2) because it iterates from 0 to n-1 \
     for each i in 0 to n-1
-int o2(int n) {
+int boo(int n) {
   int t = 0;
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
@@ -49,16 +49,16 @@ int main(int argc, const char **argv) {
  
   // use clock to measure the time taken by each function 
   clock_t start = clock();
-  int result = o(n);
+  int result = foo(n);
   clock_t end = clock();
   clock_t diff = end - start;
-  printf("Cycle count for o(n): %ld\n", diff);
+  printf("Cycle count for foo: %ld\n", diff);
 
   start = clock();  
-  result = o2(n);
+  result = boo(n);
   end = clock();
   diff = end - start;
-  printf("Cycle count for o(n^2): %ld\n", diff);
+  printf("Cycle count for boo: %ld\n", diff);
 
   return 0;
 }
