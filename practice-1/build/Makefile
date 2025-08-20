@@ -117,41 +117,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named main
+# Target rules for targets named complexity
 
 # Build rule for target.
-main: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 main
-.PHONY : main
+complexity: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 complexity
+.PHONY : complexity
 
 # fast build rule for target.
-main/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-.PHONY : main/fast
+complexity/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complexity.dir/build.make CMakeFiles/complexity.dir/build
+.PHONY : complexity/fast
 
-src/main.o: src/main.c.o
-.PHONY : src/main.o
+src/complexity.o: src/complexity.c.o
+.PHONY : src/complexity.o
 
 # target to build an object file
-src/main.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.c.o
-.PHONY : src/main.c.o
+src/complexity.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complexity.dir/build.make CMakeFiles/complexity.dir/src/complexity.c.o
+.PHONY : src/complexity.c.o
 
-src/main.i: src/main.c.i
-.PHONY : src/main.i
+src/complexity.i: src/complexity.c.i
+.PHONY : src/complexity.i
 
 # target to preprocess a source file
-src/main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.c.i
-.PHONY : src/main.c.i
+src/complexity.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complexity.dir/build.make CMakeFiles/complexity.dir/src/complexity.c.i
+.PHONY : src/complexity.c.i
 
-src/main.s: src/main.c.s
-.PHONY : src/main.s
+src/complexity.s: src/complexity.c.s
+.PHONY : src/complexity.s
 
 # target to generate assembly for a file
-src/main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.c.s
-.PHONY : src/main.c.s
+src/complexity.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complexity.dir/build.make CMakeFiles/complexity.dir/src/complexity.c.s
+.PHONY : src/complexity.c.s
 
 # Help Target
 help:
@@ -161,10 +161,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... main"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
+	@echo "... complexity"
+	@echo "... src/complexity.o"
+	@echo "... src/complexity.i"
+	@echo "... src/complexity.s"
 .PHONY : help
 
 

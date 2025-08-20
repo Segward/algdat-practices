@@ -1,5 +1,5 @@
-CMakeFiles/main.dir/src/main.c.o: \
-  /Users/gustavskyberg/Home/Programming/algstruct-practices/practice-1/src/main.c \
+CMakeFiles/complexity.dir/src/complexity.c.o: \
+  /Users/gustavskyberg/Home/Programming/algstruct-practices/practice-1/src/complexity.c \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/stdio.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/_stdio.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/sys/cdefs.h \
