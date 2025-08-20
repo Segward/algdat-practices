@@ -5,6 +5,7 @@
 #define IS_NOT_DIGIT(c) \
   ((c) < '0' || (c) > '9')
 
+//  this is o(n) because it iterates from 0 to n-1 once 
 int o(int n) {
   int t = 0;
   for (int i = 0; i < n; i++) {
@@ -13,6 +14,8 @@ int o(int n) {
   return t;
 }
 
+//  this is o(n^2) because it iterates from 0 to n-1 \
+    for each i in 0 to n-1
 int o2(int n) {
   int t = 0;
   for (int i = 0; i < n; i++) {
@@ -23,6 +26,7 @@ int o2(int n) {
   return t;
 }
 
+// get the number of iterations from argument
 int main(int argc, const char **argv) {
   if (argc < 2) {
     printf("Usage: %s <number>\n", argv[0]);
@@ -42,7 +46,8 @@ int main(int argc, const char **argv) {
     printf("Error: Number must be non-negative.\n");
     return 1;
   }
-  
+ 
+  // use clock to measure the time taken by each function 
   clock_t start = clock();
   int result = o(n);
   clock_t end = clock();
