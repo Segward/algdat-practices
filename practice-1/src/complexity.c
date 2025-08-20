@@ -42,7 +42,7 @@ int main(int argc, const char **argv) {
   }
 
   int n = atoi(argv[1]);
-  if (n < 0) {
+  if (n < 1) {
     printf("Error: Number must be non-negative.\n");
     return 1;
   }
@@ -51,14 +51,14 @@ int main(int argc, const char **argv) {
   clock_t start = clock();
   int result = o(n);
   clock_t end = clock();
-  double diff = (double)(end - start);
-  printf("Diff o(n): %.2f ms\n", diff * 1000 / CLOCKS_PER_SEC);
+  clock_t diff = end - start;
+  printf("Cycle count for o(n): %ld\n", diff);
 
   start = clock();  
   result = o2(n);
   end = clock();
-  diff = (double)(end - start);
-  printf("Diff o(n^2): %.5f ms\n", diff * 1000 / CLOCKS_PER_SEC);
+  diff = end - start;
+  printf("Cycle count for o(n^2): %ld\n", diff);
 
   return 0;
 }
