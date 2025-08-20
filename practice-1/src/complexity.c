@@ -33,6 +33,7 @@ int main(int argc, const char **argv) {
     return 1;
   }
 
+  // check if the argument is a number and only contains digits
   for (int i = 0; argv[1][i] != '\0'; i++) {
     char c = argv[1][i];
     if (IS_NOT_DIGIT(c)) {
