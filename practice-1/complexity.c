@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <math.h>
 
+// some macros for logging
 #define LOG_TIMER(T, S) \
   printf("Time taken: %ld cycles for %zu size data\n", \
     (T).cycle_count, (S)); \
@@ -12,11 +13,13 @@
   printf("Transaction: Buy at %d, Sell at %d, Profit %d\n", \
     (T).buy, (T).sell, (T).profit);
 
+// struct to hold changes in values for stock prices
 typedef struct {
   int *values;
   size_t size;
 } changes_t;
 
+// struct to hold transaction details
 typedef struct {
   int buy;
   int sell;
@@ -24,12 +27,14 @@ typedef struct {
   changes_t *changes;
 } transaction_t; 
 
+// struct to hold timing information
 typedef struct {
   clock_t start;
   clock_t end;
   clock_t cycle_count;
 } timer_t;
 
+// generates random changes range from -10 to 10
 void generate_changes(changes_t *changes, size_t size) {
   changes->size = size;
   changes->values = malloc(size * sizeof(int));
@@ -43,6 +48,8 @@ void generate_changes(changes_t *changes, size_t size) {
   }
 }
 
+// computes the maximum profit from the changes in stock prices. \
+  this is the actual algorithm for the practice problem
 void compute_profit(transaction_t *transaction) {
   int min_value = 0, min_index = 0;
   int current_value = 0, max_profit = 0;
@@ -50,11 +57,14 @@ void compute_profit(transaction_t *transaction) {
   for (size_t i = 0; i < transaction->changes->size; i++) {
     current_value += transaction->changes->values[i];
 
+    // update the minimum value when we find a new minimum
     if (current_value < min_value) {
       min_value = current_value;
       min_index = i;
     }
 
+    // update the maximum profit if the current profit is greater \
+      and set the buy and sell indices
     int profit = current_value - min_value;
     if (profit > max_profit && i > min_index) {
       max_profit = profit;
@@ -66,6 +76,7 @@ void compute_profit(transaction_t *transaction) {
   transaction->profit = max_profit;
 }
 
+// times the compute_profit function
 void time_compute_profit(transaction_t *transaction, timer_t *timer) {
   timer->start = clock();
   compute_profit(transaction);
@@ -73,12 +84,15 @@ void time_compute_profit(transaction_t *transaction, timer_t *timer) {
   timer->cycle_count = timer->end - timer->start;
 }
 
+// main function. we take one argument which is the \
+  amount <integer> of mock data to test.
 int main(int argc, const char **argv) {
   if (argc < 2) {
     printf("Usage: %s <integer>\n", argv[0]);
     return 1;
   }
 
+  // check if the argument only contains digits
   for (int i = 0; argv[1][i] != '\0'; i++) {
     unsigned char c = argv[1][i];
     if (!isdigit(c)) {
@@ -87,6 +101,7 @@ int main(int argc, const char **argv) {
     }
   }
 
+  // convert the argument to an integer
   int mock_amount = atoi(argv[1]);
   if (mock_amount <= 0) {
     printf("Error: Mock amount must be a positive integer.\n");
@@ -96,6 +111,8 @@ int main(int argc, const char **argv) {
   srand(time(NULL));
   printf("CLOCKS_PER_SEC = %ld\n", CLOCKS_PER_SEC);
 
+  // this is the example data given in the practice \
+    problem description
   int example[] = {-1, 3, -9, 2, 2, -1, 2, -1, -5};
   size_t size = sizeof(example) / sizeof(example[0]); 
 
@@ -114,6 +131,7 @@ int main(int argc, const char **argv) {
   LOG_TRANSACTION(transaction);
   LOG_TIMER(timer, size);
 
+  // generate mock changes and time the compute_profit function
   size_t mock_size = 10;
   for (int i = 0; i < mock_amount; i++) {
     changes_t mock_changes;
@@ -127,7 +145,12 @@ int main(int argc, const char **argv) {
     time_compute_profit(&transaction, &timer);
     LOG_TIMER(timer, mock_size);
 
+    // free the allocated memory since it's on the heap \
+      and we don't need it anymore
     free(mock_changes.values);
+  
+    // double the size of the mock data to look for patterns \
+      in the timing
     mock_size *= 2;
   }
 
