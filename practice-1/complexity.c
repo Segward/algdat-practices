@@ -34,6 +34,12 @@ typedef struct {
   clock_t cycle_count;
 } timer_t;
 
+// struct for storing mock data results
+typedef struct {
+  timer_t timer;
+  size_t size;
+} result_t;
+
 // generates random changes range from -10 to 10
 void generate_changes(changes_t *changes, size_t size) {
   changes->size = size;
@@ -116,20 +122,22 @@ int main(int argc, const char **argv) {
   int example[] = {-1, 3, -9, 2, 2, -1, 2, -1, -5};
   size_t size = sizeof(example) / sizeof(example[0]); 
 
-  changes_t changes = {0};
+  changes_t changes;
   changes.size = size;
   changes.values = example;
 
-  transaction_t transaction = {0};
+  transaction_t transaction;
   transaction.changes = &changes;
   transaction.buy = -1;
   transaction.sell = -1;
   transaction.profit = 0;
 
-  timer_t timer = {0};
+  timer_t timer;
   time_compute_profit(&transaction, &timer);
   LOG_TRANSACTION(transaction);
   LOG_TIMER(timer, size);
+
+  result_t results[mock_amount];
 
   // generate mock changes and time the compute_profit function
   size_t mock_size = 10;
@@ -137,13 +145,17 @@ int main(int argc, const char **argv) {
     changes_t mock_changes;
     generate_changes(&mock_changes, mock_size);
 
+    transaction_t transaction; 
     transaction.changes = &mock_changes;
     transaction.buy = -1;
     transaction.sell = -1;
     transaction.profit = 0;
 
-    time_compute_profit(&transaction, &timer);
-    LOG_TIMER(timer, mock_size);
+    // time the compute_profit function and store the results
+    timer_t mock_timer;
+    time_compute_profit(&transaction, &mock_timer);
+    results[i].timer = mock_timer;
+    results[i].size = mock_size;
 
     // free the allocated memory since it's on the heap \
       and we don't need it anymore
@@ -152,6 +164,11 @@ int main(int argc, const char **argv) {
     // double the size of the mock data to look for patterns \
       in the timing
     mock_size *= 2;
+  }
+
+  // print the results from the mock data
+  for (int i = 0; i < mock_amount; i++) {
+    LOG_TIMER(results[i].timer, results[i].size);
   }
 
   return 0;
