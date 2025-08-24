@@ -6,8 +6,8 @@
 
 // some macros for logging
 #define LOG_TIMER(T, S) \
-  printf("Time taken: %ld cycles for %zu size data\n", \
-    (T).cycle_count, (S)); \
+  printf("Time taken: %ld clock_ticks for %zu size data\n", \
+    (T).clock_tick_count, (S)); \
 
 #define LOG_TRANSACTION(T) \
   printf("Transaction: Buy at %d, Sell at %d, Profit %d\n", \
@@ -31,7 +31,7 @@ typedef struct {
 typedef struct {
   clock_t start;
   clock_t end;
-  clock_t cycle_count;
+  clock_t clock_tick_count;
 } timer_t;
 
 // struct for storing mock data results
@@ -87,7 +87,7 @@ void time_compute_profit(transaction_t *transaction, timer_t *timer) {
   timer->start = clock();
   compute_profit(transaction);
   timer->end = clock();
-  timer->cycle_count = timer->end - timer->start;
+  timer->clock_tick_count = timer->end - timer->start;
 }
 
 // main function. we take one argument which is the \
