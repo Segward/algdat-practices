@@ -6,14 +6,17 @@
 #include <ctype.h>
 #include <string.h>
 
+// Macros for logging
 #define LOG_RES(T) \
   printf("CPU clock resolution: %lis %li ns\n", (T).res.tv_sec, (T).res.tv_nsec)
 
 #define LOG_TIME(T, A, B, R) \
   printf("%d\t*\t%f\ttook\t%d s\t%li ns\trec:\t%d\n", (A), (B), (T).sec, (T).nsec, (R))
 
+// Macro to check if a number is even
 #define IS_EVEN(n) ((n) % 2 == 0)
 
+// Timer structure to hold timing information
 typedef struct {
   struct timespec res;
   struct timespec start;
@@ -22,6 +25,7 @@ typedef struct {
   long nsec;
 } my_timer_t;
 
+// Recursive multiplication functions
 double multiply_foo(int a, double b, int *rec_count) {
   if (a == 1)
     return b;
@@ -41,6 +45,7 @@ double multiply_bar(int a, double b, int *rec_count) {
   return b + multiply_bar((a - 1)/2, b + b, rec_count);
 }
 
+// Function to time the execution of a given multiplication function
 int time_func(int a, double b, double (*func)(int, double, int*), my_timer_t *t, int *rec_count) {
   if (t == NULL || func == NULL)
     return -1;
@@ -59,11 +64,13 @@ int time_func(int a, double b, double (*func)(int, double, int*), my_timer_t *t,
   return 0; 
 }
 
+// Structure for mock data
 typedef struct {
   int a;
   double b;
 } my_mock_data_t;
 
+// Generate mock data with increasing integers and random doubles
 int generate_mock_data(my_mock_data_t *data, const int size) {
   if (data == NULL || size <= 0)
     return -1;
@@ -80,12 +87,15 @@ int generate_mock_data(my_mock_data_t *data, const int size) {
   return 0;
 }
 
+// Main function to execute the program. \
+  Takes in a integer as argument for the amount of mock data to generate.
 int main(const int argc, const char *argv[]) {
   if (argc < 2) {
     printf("Usage: %s <integer>\n", argv[0]);
     return 1;
   }
 
+  // Validate that the argument is a positive integer
   for (int i = 0; argv[1][i] != '\0'; i++) {
     unsigned char c = argv[1][i];
     if (!isdigit(c)) {
@@ -100,13 +110,17 @@ int main(const int argc, const char *argv[]) {
     return 1;
   }
 
+  // Initialize timer and log resolution
   my_timer_t timer = {0};
   clock_getres(CLOCK_THREAD_CPUTIME_ID, &timer.res);
   LOG_RES(timer);
 
+  // Pointers to multiplication functions \
+    Kinda unnecessary but whatever, I don't want several time_func calls for each function
   double (*foo)(int, double, int*) = &multiply_foo;
   double (*bar)(int, double, int*) = &multiply_bar;
- 
+
+  // Test the functions with example values 
   int example_a = 13;
   double example_b = 2.5;
   double expected = (double)(example_a) * example_b;
@@ -131,6 +145,7 @@ int main(const int argc, const char *argv[]) {
 
   printf("%d * %f = %f expected %f\n", example_a, example_b, bar_result, expected);
  
+  // Generate mock data
   my_mock_data_t *data = malloc(sizeof(my_mock_data_t) * mock_amount);
   if (data == NULL) {
     printf("Error: Memory allocation failed.\n");
@@ -144,6 +159,8 @@ int main(const int argc, const char *argv[]) {
     return 1;
   }
 
+  // Time the functions with the mock data \
+    Also log the number of recursions for easier analysis
   int foo_rec_count = 0;
   int bar_rec_count = 0;
 
@@ -169,7 +186,7 @@ int main(const int argc, const char *argv[]) {
     bar_rec_count = 0;
   }
 
-
-
+  // Clean up
+  free(data);
   return 0;
 }
