@@ -72,7 +72,7 @@ int hashmap_get(hashmap_t *hm, int key, int *value) {
   return -1;
 }
 
-int multiply_foo(int a, int b) {
+double multiply_foo(int a, double b) {
   if (a == 1)
     return b;
 
@@ -81,14 +81,14 @@ int multiply_foo(int a, int b) {
 
 #define IS_EVEN(n) ((n) % 2 == 0)
 
-int multiply_bar(int a, int b) {
+double multiply_bar(int a, double b) {
   if (a == 1)
     return b;
   
-  if (IS_EVEN(b))
+  if (IS_EVEN(a))
     return multiply_bar(a/2, b + b);
 
-  return a + multiply_bar((a - 1)/2, b + b);
+  return b + multiply_bar((a - 1)/2, b + b);
 }
 
 typedef struct {
@@ -99,12 +99,12 @@ typedef struct {
   long nsec;
 } timer_t;
 
-int time_func(int a, int b, int (*func)(int, int), timer_t *t) {
+int time_func(int a, double b, double (*func)(int, double), timer_t *t) {
   if (t == NULL || func == NULL)
     return -1;
 
   clock_gettime(CLOCK_THREAD_CPUTIME_ID, &t->start);
-  int result = func(a, b);
+  double result = func(a, b);
   clock_gettime(CLOCK_THREAD_CPUTIME_ID, &t->end);
   t->sec = t->end.tv_sec - t->start.tv_sec;
   t->nsec = t->end.tv_nsec - t->start.tv_nsec;
@@ -114,11 +114,12 @@ int time_func(int a, int b, int (*func)(int, int), timer_t *t) {
     t->nsec += 1000000000;
   }
 
+  printf("Result: %f\n", result);
   LOG_TIME(*t);
   return 0; 
 }
 
-int time_funcs(int a, int b, int (**funcs)(int, int), size_t size) {
+int time_funcs(int a, double b, double (**funcs)(int, double), size_t size) {
   if (funcs == NULL || size == 0)
     return -1;
 
@@ -135,10 +136,11 @@ int main(const int argc, const char *argv[]) {
   clock_getres(CLOCK_THREAD_CPUTIME_ID, &timer.res);
   LOG_RES(timer);
 
-  int (*foo)(int, int) = &multiply_foo;
-  int (*bar)(int, int) = &multiply_bar;
-  int (*funcs[])(int, int) = {foo, bar};
-  time_funcs(1000, 1000, funcs, sizeof(funcs)/sizeof(funcs[0]));
+  double (*foo)(int, double) = &multiply_foo;
+  double (*bar)(int, double) = &multiply_bar;
+  double (*funcs[])(int, double) = {foo, bar};
+  size_t size = sizeof(funcs)/sizeof(funcs[0]);
+  time_funcs(1000, 31.3, funcs, size);
 
   return 0;
 }
