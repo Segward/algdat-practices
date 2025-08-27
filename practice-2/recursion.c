@@ -12,65 +12,14 @@
 #define LOG_TIME(T) \
   printf("Elapsed time: %d s %li ns\n", (T).sec, (T).nsec)
 
-typedef struct _node {
-    int key;
-    int value;
-    struct _node* next;
-} node_t;
+#define IS_EVEN(n) ((n) % 2 == 0)
 
-typedef struct {
-  node_t **head;
-  size_t size;
-} hashmap_t;
+#define MULTIPLY_FUNCTION_ITER(X) \
+  X(FOO, foo, 0)            \
+  X(BAR, bar, 1)
 
-int hashmap_create(hashmap_t *hm, size_t size) {
-  if (size == 0 || hm == NULL)
-    return -1;
-
-  hm->head = (node_t **)malloc(sizeof(node_t*) * size);
-  if (hm->head == NULL)
-    return -1;
-
-  hm->size = size;
-  memset(hm->head, 0, sizeof(node_t) * size);
-  return 0;
-}
-
-int hash(int key, size_t size) {
-  return abs(key) % size;
-}
-
-int hashmap_insert(hashmap_t *hm, int key, int value) {
-  if (hm == NULL || hm->head == NULL)
-    return -1;
-
-  int index = hash(key, hm->size);
-  node_t *new_node = (node_t *)malloc(sizeof(node_t));
-  if (new_node == NULL)
-    return -1;
-
-  new_node->key = key;
-  new_node->value = value;
-  new_node->next = hm->head[index];
-  hm->head[index] = new_node;
-  return 0;
-}
-
-int hashmap_get(hashmap_t *hm, int key, int *value) {
-  if (hm == NULL || hm->head == NULL || value == NULL)
-    return -1;
-  
-  int index = hash(key, hm->size);
-  node_t *node = hm->head[index];
-  while (node != NULL) {
-    if (node->key == key) {
-      *value = node->value;
-      return 0;
-    }
-  }
-
-  return -1;
-}
+#define MULTIPLY_ENUM(UC, LC, I) \
+  MULTIPLY_##UC = I,
 
 double multiply_foo(int a, double b) {
   if (a == 1)
@@ -78,8 +27,6 @@ double multiply_foo(int a, double b) {
 
   return b + multiply_foo(a - 1, b);
 }
-
-#define IS_EVEN(n) ((n) % 2 == 0)
 
 double multiply_bar(int a, double b) {
   if (a == 1)
@@ -115,7 +62,6 @@ int time_func(int a, double b, double (*func)(int, double), timer_t *t) {
   }
 
   printf("Result: %f\n", result);
-  LOG_TIME(*t);
   return 0; 
 }
 

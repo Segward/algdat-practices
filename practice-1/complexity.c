@@ -5,43 +5,46 @@
 #include <math.h>
 
 // some macros for logging
-#define LOG_TIMER(T, S) \
-  printf("Time taken: %ld clock_ticks for %zu size data\n", \
-    (T).clock_tick_count, (S)); \
+#define LOG_RES(T) \
+  printf("CPU clock resolution: %lis %li ns\n", (T).res.tv_sec, (T).res.tv_nsec)
 
 #define LOG_TRANSACTION(T) \
-  printf("Transaction: Buy at %d, Sell at %d, Profit %d\n", \
-    (T).buy, (T).sell, (T).profit);
+  printf("Buy: %d, Sell: %d, Profit: %d\n", (T).buy, (T).sell, (T).profit)
+
+#define LOG_TIMER(T, S) \
+  printf("Time taken for \t%zu size: \t%d sec \t%ld nsec\n", S, (T).sec, (T).nsec)
 
 // struct to hold changes in values for stock prices
 typedef struct {
   int *values;
   size_t size;
-} changes_t;
+} my_changes_t;
 
 // struct to hold transaction details
 typedef struct {
   int buy;
   int sell;
   int profit;
-  changes_t *changes;
-} transaction_t; 
+  my_changes_t *changes;
+} my_transaction_t; 
 
-// struct to hold timing information
+// my struct to hold timing details
 typedef struct {
-  clock_t start;
-  clock_t end;
-  clock_t clock_tick_count;
-} timer_t;
+  struct timespec res;
+  struct timespec start;
+  struct timespec end;
+  int sec;
+  long nsec;
+} my_timer_t;
 
-// struct for storing mock data results
+// struct to hold mock results
 typedef struct {
-  timer_t timer;
+  my_timer_t timer;
   size_t size;
-} result_t;
+} my_mock_result_t;
 
 // generates random changes range from -10 to 10
-void generate_changes(changes_t *changes, size_t size) {
+void generate_changes(my_changes_t *changes, size_t size) {
   changes->size = size;
   changes->values = malloc(size * sizeof(int));
   if (changes->values == NULL) {
@@ -56,7 +59,7 @@ void generate_changes(changes_t *changes, size_t size) {
 
 // computes the maximum profit from the changes in stock prices. \
   this is the actual algorithm for the practice problem
-void compute_profit(transaction_t *transaction) {
+void compute_profit(my_transaction_t *transaction) {
   int min_value = 0, min_index = 0;
   int current_value = 0, max_profit = 0;
 
@@ -83,11 +86,16 @@ void compute_profit(transaction_t *transaction) {
 }
 
 // times the compute_profit function
-void time_compute_profit(transaction_t *transaction, timer_t *timer) {
-  timer->start = clock();
+void time_compute_profit(my_transaction_t *transaction, my_timer_t *timer) {
+  clock_gettime(CLOCK_THREAD_CPUTIME_ID, &timer->start);
   compute_profit(transaction);
-  timer->end = clock();
-  timer->clock_tick_count = timer->end - timer->start;
+  clock_gettime(CLOCK_THREAD_CPUTIME_ID, &timer->end);
+  timer->sec = timer->end.tv_sec - timer->start.tv_sec;
+  timer->nsec = timer->end.tv_nsec - timer->start.tv_nsec;
+  if (timer->nsec < 0) {
+    timer->sec -= 1;
+    timer->nsec += 1000000000L;
+  }
 }
 
 // main function. we take one argument which is the \
@@ -114,45 +122,52 @@ int main(const int argc, const char **argv) {
     return 1;
   }
 
+  // seed the random number generator
   srand(time(NULL));
-  printf("CLOCKS_PER_SEC = %ld\n", CLOCKS_PER_SEC);
 
   // this is the example data given in the practice \
     problem description
   int example[] = {-1, 3, -9, 2, 2, -1, 2, -1, -5};
   size_t size = sizeof(example) / sizeof(example[0]); 
 
-  changes_t changes;
+  my_changes_t changes;
   changes.size = size;
   changes.values = example;
 
-  transaction_t transaction;
+  my_transaction_t transaction;
   transaction.changes = &changes;
   transaction.buy = -1;
   transaction.sell = -1;
   transaction.profit = 0;
 
-  timer_t timer;
+  // log the CPU clock resolution
+  my_timer_t timer = {0};
+  clock_getres(CLOCK_MONOTONIC, &timer.res);
+  LOG_RES(timer);
+
+  // time the compute_profit function with the example data
   time_compute_profit(&transaction, &timer);
   LOG_TRANSACTION(transaction);
-  LOG_TIMER(timer, size);
+  LOG_TIMER(timer, changes.size);
 
-  result_t results[mock_amount];
+  // array to hold the mock results
+  my_mock_result_t results[mock_amount];
 
   // generate mock changes and time the compute_profit function
   size_t mock_size = 10;
   for (int i = 0; i < mock_amount; i++) {
-    changes_t mock_changes;
+    my_changes_t mock_changes;
     generate_changes(&mock_changes, mock_size);
 
-    transaction_t transaction; 
+    my_transaction_t transaction; 
     transaction.changes = &mock_changes;
     transaction.buy = -1;
     transaction.sell = -1;
     transaction.profit = 0;
 
     // time the compute_profit function and store the results
-    timer_t mock_timer;
+    my_timer_t mock_timer = {0};
+    clock_getres(CLOCK_MONOTONIC, &mock_timer.res);
     time_compute_profit(&transaction, &mock_timer);
     results[i].timer = mock_timer;
     results[i].size = mock_size;
