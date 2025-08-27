@@ -92,7 +92,7 @@ void time_compute_profit(transaction_t *transaction, timer_t *timer) {
 
 // main function. we take one argument which is the \
   amount <integer> of mock data to test.
-int main(int argc, const char **argv) {
+int main(const int argc, const char **argv) {
   if (argc < 2) {
     printf("Usage: %s <integer>\n", argv[0]);
     return 1;
