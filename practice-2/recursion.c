@@ -106,7 +106,31 @@ int main(const int argc, const char *argv[]) {
 
   double (*foo)(int, double, int*) = &multiply_foo;
   double (*bar)(int, double, int*) = &multiply_bar;
-  
+ 
+  int example_a = 13;
+  double example_b = 2.5;
+  double expected = (double)(example_a) * example_b;
+  int rec_count = 0;
+  double foo_result = foo(example_a, example_b, &rec_count);
+  if (fabs(foo_result - expected) > 1e-6) {
+    printf("Error: multiply_foo failed. Expected %f, got %f\n", expected, foo_result);
+    return 1;
+  }
+
+  printf("%d * %f = %f expected %f\n", example_a, example_b, foo_result, expected);
+
+  example_a = 14;
+  example_b = 10.1; 
+  expected = (double)(example_a) * example_b;
+  rec_count = 0;
+  double bar_result = bar(example_a, example_b, &rec_count);
+  if (fabs(bar_result - expected) > 1e-6) {
+    printf("Error: multiply_bar failed. Expected %f, got %f\n", expected, bar_result);
+    return 1;
+  }
+
+  printf("%d * %f = %f expected %f\n", example_a, example_b, bar_result, expected);
+ 
   my_mock_data_t *data = malloc(sizeof(my_mock_data_t) * mock_amount);
   if (data == NULL) {
     printf("Error: Memory allocation failed.\n");
