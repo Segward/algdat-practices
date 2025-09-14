@@ -4,7 +4,7 @@
 #include <time.h>
 #include <stdint.h>
 
-#define THRESHOLD 32
+#define THRESHOLD 64
 
 int sum_test_sec = 0;
 int sum_test_nsec = 0;
@@ -88,7 +88,7 @@ void insertionsort(int *array, int left, int right) {
     int key = array[i];
     int j = i - 1;
 
-    while (j >= 0 && array[j] > key) {
+    while (j >= left && array[j] > key) {
       array[j + 1] = array[j];
       j--;
     }
