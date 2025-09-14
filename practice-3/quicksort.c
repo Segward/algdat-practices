@@ -2,6 +2,21 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
+#include <stdint.h>
+
+#define THRESHOLD 32
+
+typedef struct {
+  struct timespec res, start, end;
+  int sec;
+  long nsec;
+} my_timer_t;
+
+typedef struct {
+  int *array;
+  int size;
+  my_timer_t timer;
+} my_test_t;
 
 static inline void swap(int *a, int *b) {
   int tmp = *a;
@@ -79,8 +94,6 @@ void insertionsort(int *array, int left, int right) {
   }  
 }
 
-#define THRESHOLD 32
-
 void hybridsort(int *array, int left, int right) {
   if (array == NULL || left < 0 || right < 0 || left >= right)
     return;
@@ -105,18 +118,6 @@ void hybridsort(int *array, int left, int right) {
     }
   }
 }
-
-typedef struct {
-  struct timespec res, start, end;
-  int sec;
-  long nsec;
-} my_timer_t;
-
-typedef struct {
-  int *array;
-  int size;
-  my_timer_t timer;
-} my_test_t;
 
 int init_test(my_test_t *test, int size) {
   if (test == NULL || size <= 0) {
@@ -150,13 +151,13 @@ int generate_random_array(int *array, int size, int low, int high) {
   return 0;
 }
 
-int sum_array(int *array, int size) {
+int64_t sum_array(int *array, int size) {
   if (array == NULL || size <= 0) {
     printf("Error: NULL pointer or invalid size in sum_array\n");
     return -1;
   }
 
-  int sum = 0;
+  int64_t sum = 0;
   for (int i = 0; i < size; i++) {
     sum += array[i];
   }
@@ -185,7 +186,7 @@ int time_func(my_test_t *test, void (*func)(int *, int, int)) {
     return -1;
   }
 
-  int sum_before = sum_array(test->array, test->size);
+  int64_t sum_before = sum_array(test->array, test->size);
   if (sum_before < 0) {
     printf("Error: sum_array failed in time_func\n");
     return -1;
@@ -202,7 +203,7 @@ int time_func(my_test_t *test, void (*func)(int *, int, int)) {
     test->timer.nsec += 1000000000;
   }
 
-  int sum_after = sum_array(test->array, test->size);
+  int64_t sum_after = sum_array(test->array, test->size);
   if (sum_before != sum_after) {
     printf("Error: Array modified in time_func\n");
     return -1;
