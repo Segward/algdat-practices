@@ -6,6 +6,9 @@
 
 #define THRESHOLD 32
 
+int sum_test_sec = 0;
+int sum_test_nsec = 0;
+
 typedef struct {
   struct timespec res, start, end;
   int sec;
@@ -101,7 +104,7 @@ void hybridsort(int *array, int left, int right) {
   while (left < right) {
     if (right - left + 1 <= THRESHOLD) {
       insertionsort(array, left, right);
-      continue;
+      return;
     } 
 
     int lp, rp;
@@ -214,6 +217,13 @@ int time_func(my_test_t *test, void (*func)(int *, int, int)) {
     return -1;
   }
 
+  sum_test_sec += test->timer.sec;
+  sum_test_nsec += test->timer.nsec;
+  if (sum_test_nsec >= 1000000000) {
+    sum_test_sec += sum_test_nsec / 1000000000;
+    sum_test_nsec = sum_test_nsec % 1000000000;
+  }
+
   return 0;
 }
 
@@ -322,13 +332,18 @@ int main(const int argc, const char *argv[]) {
     }
   }
 
+  printf("\nSum time for %d tests of size %d: %d sec %d nsec\n\n", test_num, test_size, sum_test_sec, sum_test_nsec);
+
   for (int i = 0; i < test_num; i++) {
     if (generate_random_array(tests[i].array, tests[i].size, 0, 1000) != 0) {
       printf("Error: Random array generation failed.\n");
       free(tests);
       return 1;
     }
-  } 
+  }
+
+  sum_test_sec = 0; 
+  sum_test_nsec = 0;
 
   void (*hsort_func)(int *, int, int) = &hybridsort;
   printf("Hybrid Sort Tests:\n");
@@ -337,6 +352,12 @@ int main(const int argc, const char *argv[]) {
       printf("Error: Test %d failed.\n", i + 1);
       return 1;
     }
+  }
+
+  printf("\nSum time for %d tests of size %d: %d sec %d nsec\n\n", test_num, test_size, sum_test_sec, sum_test_nsec);
+
+  for (int i = 0; i < test_num; i++) {
+    free(tests[i].array);
   }
 
   free(tests);
