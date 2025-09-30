@@ -4,7 +4,7 @@
 #include <time.h>
 #include <stdint.h>
 
-#define THRESHOLD 64
+#define THRESHOLD 40
 
 int sum_test_sec = 0;
 int sum_test_nsec = 0;
