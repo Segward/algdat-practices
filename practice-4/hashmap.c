@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
-typedef struct {
+typedef struct node node_t;
+
+typedef struct node{
   char *key;
   char *value;
-  struct node_t *next;
+  node_t *next;
 } node_t;
 
 void node_init(node_t *node, char *key, void *value) {
@@ -40,7 +43,7 @@ int hash(char *key, size_t capacity) {
   return sum;
 }
 
-int hashmap_put(hashmap_t *map, char *key, char *value) {
+int hashmap_insert(hashmap_t *map, char *key, char *value) {
   int index = hash(key, map->capacity);
   node_t *new_node = (node_t *)malloc(sizeof(node_t));
   if (!new_node)
@@ -57,9 +60,50 @@ int hashmap_put(hashmap_t *map, char *key, char *value) {
   return 0;
 }
 
+node_t *hashmap_get(hashmap_t *map, char *key) {
+  int index = hash(key, map->capacity);
+  node_t *node = map->nodes[index];
 
+  node_t *head = NULL, *tail = NULL;
+  while (node != NULL) {
+    if (strcmp(node->key, key) == 0) {
+      node_t *copy = (node_t *)malloc(sizeof(node_t));
+      if (!copy)
+        return NULL;
+
+      node_init(copy, node->key, node->value);
+      if (head == NULL) {
+        head = copy;
+        tail = copy;
+      } else {
+        tail->next = copy;
+        tail = copy;
+      }
+    }
+
+    node = node->next;
+  }
+
+  return head;
+}
 
 int main(int argc, char *argv[]) {
+  hashmap_t *map = (hashmap_t *)malloc(sizeof(hashmap_t));
+  if (hashmap_init(map, 1000) != 0) {
+    fprintf(stderr, "Failed to initialize hashmap\n");
+    return -1;
+  }
 
-    return 0;
+  hashmap_insert(map, "test", "Alice");
+  hashmap_insert(map, "test2", "Bob");
+  hashmap_insert(map, "test3", "Charlie");
+  hashmap_insert(map, "test2", "David");
+
+  node_t *test2 = hashmap_get(map, "test2");
+  while (test2 != NULL) {
+    printf("Key: %s, Value: %s\n", test2->key, test2->value);
+    test2 = test2->next;
+  }
+
+  return 0;
 }
