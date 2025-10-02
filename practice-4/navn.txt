@@ -1,0 +1,118 @@
+Alexander Oddsen,Arne
+Helene,Askeland
+Ida,Aspenes-Isaksen
+Mia,Austrheim
+Ola Syrstad,Berg
+Amadeus Syvertsen,Berg
+Jon,Bergland
+Benjamin Jiemin Qin,Berild
+Tor Arne,Birkeland
+Vetle Traran,Bjørnøy
+Fredrik Tolås,Borbe
+Aleksandrs,Broks
+Christina Noppakao,Bye
+Sindre Jentoft,Bøe
+Trang Minh,Duong
+Serghii,Dykyy
+Stian,Dølerud
+Alexander Owren,Elton
+Ingunn Tonetta,Erdal
+Sigve,Eriksen
+Aleksander Hjortkær Sand,Evensen
+Ingrid,Flatland
+Tord Johannesen,Fosse
+Mikael Stray,Frøyshov
+Kasper Østerlie,Gladsøy
+Håkon Nikolai Indrestrand,Gray
+Magnus Næssan,Gaarder
+Helge,Hafting
+Markus Nikolai,Hagen
+Jan-Einar,Halla
+Sverre Grønhaug,Halvorsen
+Kasper Gjesdal,Hansen
+Axel Aartun,Hansson
+Edvard Granheim,Harbo
+Siri Volan,Hatling
+Martin Olai Amundsen,Henøen
+Thomas Oliver Wallin,Higgins
+Regine,Hjelmtveit
+Maamoun Adnan,Hmaidoush
+Solfrid Emblem,Holte
+William Laukvik,Holtsdalen
+Helena An Haaland,Haarr
+Christian Bellika,Jensen
+Alexander Tawan Atjanthuek,Johnsen
+Solveig Maria,Jørgensen
+Markus Hysing,Jøssund
+Pyotr,Karbovskiy-Kjellman
+Marius,Kiplesund
+Nora Lilliedahl,Kirknes
+Edvard Emmanuel,Klavenes
+Casper,Kolsrud
+Jørgen Fenstad,Kottum
+Wayan Satria,Krabseth
+Galina,Kristensen
+Benjamin,Kvello-Hansen
+Liam Schreiner,Lande
+Atas,Lapenas
+Hel Eline,Larsen
+Tri Tac,Le
+Eilif Hjermann,Lindblad
+Oskar Hoddø,Lindh
+Iver,Lindholm
+Silje Marie Borgan,Lund
+Aminda Oleane,Lunde
+Thea Marie Alver,Lønvik
+Nicolay Emil Fremstad,Løvlie
+Andreas,Madsen
+Oscar Kehinde Asplin,Martins
+Hector,Mendana Morales
+Sindre Larsen,Mjøs
+Dennis,Moe
+Aleksander Emil,Moltu
+Stian Mathisen,Myrbekk
+Anders Flatland,Myrvang
+Vetle,Nilsen
+Maria Kristin,Olafsdottir
+Ingrid Neverås,Opheim
+Durva,Parmar
+Trym Olaf Huneide,Pedersen
+Raisa,Raihan
+Christian Petter,Remman
+Gilianne Kate Alivia,Reyes
+Viggo Peter Edgar,Ringsby
+Ivar,Rivertz
+Jostein,Rodahl
+Audun Nåvik,Rosvold
+Filip Engan,Ræder
+Mahshid,Saleh
+Kristian Ask,Selmer
+Shakti Om,Sharma
+Zainab Mahduda,Sherpour
+Gustav Haverstad,Skyberg
+Eskild,Smestu
+Mateo,Souto
+Eva,Stamatovska
+Anine Selle,Standnes
+Theodor,Strøm-Thrane
+Henrik,Sund
+Erlend,Sundsdal
+Sigurd Andris,Sørengen
+Oleander,Tengesdal
+Julie Bao Thi,Tran
+Nicoline Lean,Tønnessen
+Sasha,Unruh
+Bjørn Adam,Vangen
+Mateja,Vasic
+Harald Theodor Helland,Velde
+Piranavan,Visvalingam
+Martha Luise,Vogel
+Cecilie,Vu
+Ingve,Værnes
+Petter Tjelde,Vaagen
+Stian Closs,Walmann
+Marcus,Westum
+Ole-Kristian,Wigum
+Elias André,Willumsen
+Yazan Samer,Zarka
+Christian Midtskaug,Aas

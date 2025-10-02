@@ -7,7 +7,6 @@ typedef struct node_s node_t;
 
 typedef struct node_s {
   char *key;
-  char *value;
   node_t *next;
 } node_t;
 
@@ -38,37 +37,34 @@ unsigned int hash(char *key, size_t capacity) {
   return sum % capacity;
 }
 
-node_t *node_init(char *key, char *value, unsigned int *index) {
+node_t *node_init(char *key, unsigned int *index) {
   node_t *node = (node_t *)malloc(sizeof(node_t));
   if (!node)
     return NULL;
 
   node->key = key;
-  node->value = value;
   node->next = NULL;
   return node;
 }
 
-void hashmap_insert(hashmap_t *map, char *key, char *value) {
+void hashmap_insert(hashmap_t *map, char *key) {
   unsigned int index = hash(key, map->capacity);
   node_t *node = map->nodes[index];
   if (node == NULL) {
-    map->nodes[index] = node_init(key, value, &index);
+    map->nodes[index] = node_init(key, &index);
     return;
   }
 
   node_t *prev = NULL;
   while (node != NULL) {
-    if (strcmp(node->key, key) == 0) {
-      node->value = value;
+    if (strcmp(node->key, key) == 0)
       return;
-    }
 
     prev = node;
     node = node->next;
   }
 
-  prev->next = node_init(key, value, &index);
+  prev->next = node_init(key, &index);
 }
 
 char *hashmap_get(hashmap_t *map, char *key) {
@@ -79,7 +75,7 @@ char *hashmap_get(hashmap_t *map, char *key) {
 
   while (node != NULL) {
     if (strcmp(node->key, key) == 0)
-      return node->value;
+      return node->key;
 
     node = node->next;
   }
@@ -95,7 +91,23 @@ void hashmap_dump(hashmap_t *map) {
 
     printf("[%zu]: ", i);
     while (node != NULL) {
-      printf("(%s: %s) -> ", node->key, node->value);
+      printf("(%s) -> ", node->key);
+      node = node->next;
+    }
+
+    printf("NULL\n");
+  }
+}
+
+void hashmap_dump_collisions(hashmap_t *map) {
+  for (size_t i = 0; i < map->capacity; i++) {
+    node_t *node = map->nodes[i];
+    if (node == NULL || node->next == NULL)
+      continue;
+
+    printf("[%zu]: ", i);
+    while (node != NULL) {
+      printf("(%s) -> ", node->key);
       node = node->next;
     }
 
@@ -104,16 +116,21 @@ void hashmap_dump(hashmap_t *map) {
 }
 
 int main(int argc, char *argv[]) {
-  hashmap_t *map = hashmap_init(3);
-  hashmap_insert(map, "temp1", "Alice");
-  hashmap_insert(map, "temp2", "Bob");
-  hashmap_insert(map, "temp3", "Charlie");
-  hashmap_insert(map, "temp4", "David");
-  hashmap_insert(map, "temp5", "Eve");
-  hashmap_dump(map);
-  
-  char *value = hashmap_get(map, "temp4");
-  printf("Value for 'temp4': %s\n", value ? value : "Not found");
+  hashmap_t *map = hashmap_init(5);
+  hashmap_insert(map, "apple");
+  hashmap_insert(map, "banana");
+  hashmap_insert(map, "orange");
+  hashmap_insert(map, "grape");
+  hashmap_insert(map, "melon");
+  hashmap_insert(map, "kiwi");
+  hashmap_insert(map, "peach");
+  hashmap_insert(map, "plum");
+  hashmap_insert(map, "pear");
+  hashmap_insert(map, "mango");
 
+  printf("Hashmap contents:\n");
+  hashmap_dump(map);
+  printf("\nCollisions:\n");
+  hashmap_dump_collisions(map);
   return 0;
 }
