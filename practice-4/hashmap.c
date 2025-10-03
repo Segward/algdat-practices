@@ -12,15 +12,46 @@ typedef struct node_s {
 
 typedef struct {
   node_t **nodes;
-  size_t capacity;
+  int count;
+  int capacity;
+  int collisions;
 } hashmap_t;
+
+unsigned int hash(char *key, size_t capacity) {
+  unsigned int sum = 0;
+  for (int i = 0; key[i] != '\0'; i++) {
+    sum += sum * 37 + key[i];
+  }
+  return sum % capacity;
+}
+
+void hashmap_expand(hashmap_t *map, size_t new_capacity) {
+  node_t **new_nodes = (node_t **)calloc(new_capacity, sizeof(node_t *));
+  if (!new_nodes)
+    return;
+
+  for (size_t i = 0; i < map->capacity; i++) {
+    node_t *node = map->nodes[i];
+    while (node != NULL) {
+      unsigned int index = hash(node->key, new_capacity);
+      node_t *next = node->next;
+      node->next = new_nodes[index];
+      new_nodes[index] = node;
+      node = next;
+    }
+  }
+
+  free(map->nodes);
+  map->nodes = new_nodes;
+  map->capacity = new_capacity;
+}
 
 hashmap_t *hashmap_init(size_t capacity) {
   hashmap_t *map = (hashmap_t *)malloc(sizeof(hashmap_t));
   if (!map)
     return NULL;
 
-  map->nodes = (node_t **)malloc(sizeof(node_t *) * capacity);
+  map->nodes = (node_t **)calloc(capacity, sizeof(node_t *));
   if (!map->nodes)
     return NULL;
 
@@ -28,33 +59,23 @@ hashmap_t *hashmap_init(size_t capacity) {
   return map;
 }
 
-unsigned int hash(char *key, size_t capacity) {
-  unsigned int sum = 0;
-  for (int i = 0; key[i] != '\0'; i++) {
-    sum += sum * 37 + key[i];
+void hashmap_insert(hashmap_t *map, char *key) {
+  if ((float)map->count / map->capacity > 0.5) {
+    hashmap_expand(map, map->capacity * 2);
   }
 
-  return sum % capacity;
-}
-
-node_t *node_init(char *key, unsigned int *index) {
-  node_t *node = (node_t *)malloc(sizeof(node_t));
-  if (!node)
-    return NULL;
-
-  node->key = key;
-  node->next = NULL;
-  return node;
-}
-
-void hashmap_insert(hashmap_t *map, char *key) {
   unsigned int index = hash(key, map->capacity);
   node_t *node = map->nodes[index];
   if (node == NULL) {
-    map->nodes[index] = node_init(key, &index);
+    node = (node_t *)malloc(sizeof(node_t));
+    node->key = strdup(key);
+    node->next = NULL;
+    map->nodes[index] = node;
+    map->count++;
     return;
   }
 
+  map->collisions++;
   node_t *prev = NULL;
   while (node != NULL) {
     if (strcmp(node->key, key) == 0)
@@ -64,23 +85,11 @@ void hashmap_insert(hashmap_t *map, char *key) {
     node = node->next;
   }
 
-  prev->next = node_init(key, &index);
-}
-
-char *hashmap_get(hashmap_t *map, char *key) {
-  unsigned int index = hash(key, map->capacity);
-  node_t *node = map->nodes[index];
-  if (node == NULL)
-    return NULL;
-
-  while (node != NULL) {
-    if (strcmp(node->key, key) == 0)
-      return node->key;
-
-    node = node->next;
-  }
-
-  return NULL;
+  node = (node_t *)malloc(sizeof(node_t));
+  node->key = strdup(key);
+  node->next = NULL;
+  prev->next = node;
+  map->count++;
 }
 
 void hashmap_dump(hashmap_t *map) {
@@ -99,38 +108,35 @@ void hashmap_dump(hashmap_t *map) {
   }
 }
 
-void hashmap_dump_collisions(hashmap_t *map) {
-  for (size_t i = 0; i < map->capacity; i++) {
-    node_t *node = map->nodes[i];
-    if (node == NULL || node->next == NULL)
-      continue;
-
-    printf("[%zu]: ", i);
-    while (node != NULL) {
-      printf("(%s) -> ", node->key);
-      node = node->next;
-    }
-
-    printf("NULL\n");
-  }
-}
-
 int main(int argc, char *argv[]) {
-  hashmap_t *map = hashmap_init(5);
-  hashmap_insert(map, "apple");
-  hashmap_insert(map, "banana");
-  hashmap_insert(map, "orange");
-  hashmap_insert(map, "grape");
-  hashmap_insert(map, "melon");
-  hashmap_insert(map, "kiwi");
-  hashmap_insert(map, "peach");
-  hashmap_insert(map, "plum");
-  hashmap_insert(map, "pear");
-  hashmap_insert(map, "mango");
+  FILE *file = fopen("navn.txt", "r");
+  if (!file)
+    return -1;
 
-  printf("Hashmap contents:\n");
-  hashmap_dump(map);
-  printf("\nCollisions:\n");
-  hashmap_dump_collisions(map);
+  char line[256];
+  char *names[256];
+  int count = 0;
+
+  while (fgets(line, sizeof(line), file)) {
+    line[strcspn(line, "\n")] = 0;
+    names[count] = strdup(line);
+    count++;
+  }
+
+  fclose(file);
+  hashmap_t *map = hashmap_init(16);
+  if (!map) {
+    fprintf(stderr, "Failed to initialize hashmap\n");
+    return -1;
+  }
+
+  for (int i = 0; i < count; i++) {
+    hashmap_insert(map, names[i]);
+  }
+
+  float load_factor = (float)map->count / map->capacity;
+  printf("Load factor: %.2f\n", load_factor);
+  float collision_rate = (float)map->collisions / map->count;
+  printf("Collision rate: %.2f\n", collision_rate);
   return 0;
 }
