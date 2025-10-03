@@ -27,9 +27,6 @@ unsigned int hash(char *key, size_t capacity) {
 
 void hashmap_expand(hashmap_t *map, size_t new_capacity) {
   node_t **new_nodes = (node_t **)calloc(new_capacity, sizeof(node_t *));
-  if (!new_nodes)
-    return;
-
   for (size_t i = 0; i < map->capacity; i++) {
     node_t *node = map->nodes[i];
     while (node != NULL) {
@@ -47,14 +44,11 @@ void hashmap_expand(hashmap_t *map, size_t new_capacity) {
 }
 
 hashmap_t *hashmap_init(size_t capacity) {
+  if (capacity == 0)
+    return NULL;
+
   hashmap_t *map = (hashmap_t *)malloc(sizeof(hashmap_t));
-  if (!map)
-    return NULL;
-
   map->nodes = (node_t **)calloc(capacity, sizeof(node_t *));
-  if (!map->nodes)
-    return NULL;
-
   map->capacity = capacity;
   return map;
 }
@@ -92,10 +86,29 @@ void hashmap_insert(hashmap_t *map, char *key) {
   map->count++;
 }
 
-void hashmap_dump(hashmap_t *map) {
+char *hashmap_search(hashmap_t *map, char *key) {
+  unsigned int index = hash(key, map->capacity);
+  node_t *node = map->nodes[index];
+  if (node == NULL)
+    return NULL;
+
+  while (node != NULL) {
+    if (strcmp(node->key, key) == 0)
+      return node->key;
+
+    node = node->next;
+  }
+
+  return NULL;
+}
+
+void hashmap_dump(hashmap_t *map, int collisions) {
   for (size_t i = 0; i < map->capacity; i++) {
     node_t *node = map->nodes[i];
     if (node == NULL)
+      continue;
+
+    if (collisions && node->next == NULL)
       continue;
 
     printf("[%zu]: ", i);
@@ -107,6 +120,8 @@ void hashmap_dump(hashmap_t *map) {
     printf("NULL\n");
   }
 }
+
+
 
 int main(int argc, char *argv[]) {
   FILE *file = fopen("navn.txt", "r");
@@ -134,9 +149,26 @@ int main(int argc, char *argv[]) {
     hashmap_insert(map, names[i]);
   }
 
+  printf("\nHashmap contents:\n");
+  hashmap_dump(map, 0);
+  printf("\n");
+
+  printf("\nCollisions only:\n");
+  hashmap_dump(map, 1);
+  printf("\n");
+
+  char *search_key = "Gustav Haverstad,Skyberg";
+  char *result = hashmap_search(map, search_key);
+  if (result) {
+    printf("Found: %s\n", result);
+  } else {
+    printf("Not found: %s\n", search_key);
+  }
+
   float load_factor = (float)map->count / map->capacity;
   printf("Load factor: %.2f\n", load_factor);
   float collision_rate = (float)map->collisions / map->count;
   printf("Collision rate: %.2f\n", collision_rate);
+
   return 0;
 }
