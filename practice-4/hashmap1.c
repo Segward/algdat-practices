@@ -35,6 +35,8 @@ hashmap_t *hashmap_init(size_t capacity) {
   hashmap_t *map = (hashmap_t *)malloc(sizeof(hashmap_t));
   map->nodes = (node_t **)calloc(capacity, sizeof(node_t *));
   map->capacity = capacity;
+  map->count = 0;
+  map->collisions = 0;
   return map;
 }
 
