@@ -4,6 +4,8 @@
 #include <string.h>
 #include <time.h>
 
+#define HASHMAP_SIZE 256
+
 typedef struct node_s node_t;
 
 typedef struct node_s {
@@ -26,29 +28,6 @@ unsigned int hash(char *key, size_t capacity) {
   return hash % capacity;
 }
 
-hashmap_t *hashmap_init(size_t capacity);
-void hashmap_insert(hashmap_t *map, char *key);
-
-// causes seg fault
-void hashmap_expand(hashmap_t *map, size_t new_capacity) {
-  hashmap_t *new_map = hashmap_init(new_capacity);
-  for (size_t i = 0; i < map->capacity; i++) {
-    node_t *node = map->nodes[i];
-    while (node != NULL) {
-      hashmap_insert(new_map, node->key);
-      node = node->next;
-    }
-
-    free(map->nodes[i]);
-  }
-
-  free(map->nodes);
-  map->nodes = new_map->nodes;
-  map->capacity = new_map->capacity;
-  map->collisions = new_map->collisions;
-  free(new_map);
-}
-
 hashmap_t *hashmap_init(size_t capacity) {
   if (capacity == 0)
     return NULL;
@@ -60,10 +39,6 @@ hashmap_t *hashmap_init(size_t capacity) {
 }
 
 void hashmap_insert(hashmap_t *map, char *key) {
-  if ((float)map->count / map->capacity > 0.5) {
-    hashmap_expand(map, map->capacity * 2);
-  }
-
   unsigned int index = hash(key, map->capacity);
   node_t *node = map->nodes[index];
   if (node == NULL) {
@@ -143,7 +118,7 @@ int main(int argc, char *argv[]) {
   }
 
   fclose(file);
-  hashmap_t *map = hashmap_init(16);
+  hashmap_t *map = hashmap_init(HASHMAP_SIZE);
   if (!map) {
     fprintf(stderr, "Failed to initialize hashmap\n");
     return -1;
