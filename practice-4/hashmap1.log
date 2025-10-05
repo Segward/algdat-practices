@@ -1,0 +1,119 @@
+
+Hashmap contents:
+[1]: (Aleksandrs,Broks) -> (Fredrik Tolås,Borbe) -> (Eskild,Smestu) -> NULL
+[2]: (Stian,Dølerud) -> NULL
+[5]: (Harald Theodor Helland,Velde) -> NULL
+[8]: (Bjørn Adam,Vangen) -> NULL
+[9]: (Thea Marie Alver,Lønvik) -> (Anine Selle,Standnes) -> NULL
+[11]: (Jørgen Fenstad,Kottum) -> NULL
+[13]: (Gilianne Kate Alivia,Reyes) -> NULL
+[15]: (Shakti Om,Sharma) -> NULL
+[16]: (Jostein,Rodahl) -> NULL
+[17]: (Iver,Lindholm) -> NULL
+[19]: (Serghii,Dykyy) -> (Marcus,Westum) -> NULL
+[20]: (Martin Olai Amundsen,Henøen) -> NULL
+[25]: (Ingve,Værnes) -> NULL
+[27]: (Edvard Granheim,Harbo) -> NULL
+[29]: (Mateja,Vasic) -> NULL
+[30]: (Mahshid,Saleh) -> NULL
+[34]: (Ingunn Tonetta,Erdal) -> NULL
+[36]: (Markus Hysing,Jøssund) -> NULL
+[39]: (Gustav Haverstad,Skyberg) -> NULL
+[40]: (Alexander Owren,Elton) -> NULL
+[43]: (Tord Johannesen,Fosse) -> NULL
+[46]: (Martha Luise,Vogel) -> NULL
+[47]: (Anders Flatland,Myrvang) -> NULL
+[48]: (Christian Petter,Remman) -> NULL
+[55]: (Ola Syrstad,Berg) -> NULL
+[62]: (Stian Closs,Walmann) -> NULL
+[67]: (Thomas Oliver Wallin,Higgins) -> NULL
+[77]: (Liam Schreiner,Lande) -> NULL
+[83]: (Christina Noppakao,Bye) -> NULL
+[84]: (William Laukvik,Holtsdalen) -> (Kristian Ask,Selmer) -> (Henrik,Sund) -> NULL
+[87]: (Mia,Austrheim) -> NULL
+[88]: (Hel Eline,Larsen) -> (Solveig Maria,Jørgensen) -> (Trym Olaf Huneide,Pedersen) -> NULL
+[90]: (Oleander,Tengesdal) -> NULL
+[91]: (Nicolay Emil Fremstad,Løvlie) -> NULL
+[92]: (Wayan Satria,Krabseth) -> (Axel Aartun,Hansson) -> NULL
+[93]: (Kasper Østerlie,Gladsøy) -> NULL
+[99]: (Dennis,Moe) -> NULL
+[101]: (Vetle Traran,Bjørnøy) -> NULL
+[104]: (Pyotr,Karbovskiy-Kjellman) -> (Mikael Stray,Frøyshov) -> (Maria Kristin,Olafsdottir) -> (Audun Nåvik,Rosvold) -> NULL
+[105]: (Atas,Lapenas) -> NULL
+[106]: (Eilif Hjermann,Lindblad) -> NULL
+[108]: (Jon,Bergland) -> (Tor Arne,Birkeland) -> (Durva,Parmar) -> NULL
+[109]: (Aminda Oleane,Lunde) -> NULL
+[111]: (Sindre Larsen,Mjøs) -> NULL
+[112]: (Sigve,Eriksen) -> NULL
+[113]: (Stian Mathisen,Myrbekk) -> NULL
+[114]: (Casper,Kolsrud) -> NULL
+[119]: (Amadeus Syvertsen,Berg) -> NULL
+[120]: (Christian Bellika,Jensen) -> NULL
+[128]: (Markus Nikolai,Hagen) -> (Filip Engan,Ræder) -> NULL
+[132]: (Marius,Kiplesund) -> NULL
+[136]: (Alexander Tawan Atjanthuek,Johnsen) -> (Vetle,Nilsen) -> NULL
+[140]: (Silje Marie Borgan,Lund) -> NULL
+[143]: (Håkon Nikolai Indrestrand,Gray) -> NULL
+[144]: (Oskar Hoddø,Lindh) -> (Petter Tjelde,Vaagen) -> NULL
+[145]: (Sindre Jentoft,Bøe) -> NULL
+[151]: (Ingrid Neverås,Opheim) -> NULL
+[156]: (Ingrid,Flatland) -> NULL
+[159]: (Helge,Hafting) -> NULL
+[170]: (Erlend,Sundsdal) -> NULL
+[171]: (Oscar Kehinde Asplin,Martins) -> NULL
+[172]: (Helene,Askeland) -> NULL
+[173]: (Christian Midtskaug,Aas) -> NULL
+[174]: (Sasha,Unruh) -> NULL
+[175]: (Eva,Stamatovska) -> NULL
+[176]: (Nicoline Lean,Tønnessen) -> NULL
+[178]: (Ivar,Rivertz) -> NULL
+[179]: (Mateo,Souto) -> NULL
+[181]: (Solfrid Emblem,Holte) -> NULL
+[184]: (Benjamin,Kvello-Hansen) -> (Aleksander Hjortkær Sand,Evensen) -> NULL
+[191]: (Siri Volan,Hatling) -> NULL
+[195]: (Yazan Samer,Zarka) -> NULL
+[200]: (Sigurd Andris,Sørengen) -> NULL
+[205]: (Theodor,Strøm-Thrane) -> NULL
+[207]: (Trang Minh,Duong) -> (Ole-Kristian,Wigum) -> NULL
+[208]: (Ida,Aspenes-Isaksen) -> NULL
+[213]: (Aleksander Emil,Moltu) -> NULL
+[217]: (Alexander Oddsen,Arne) -> (Viggo Peter Edgar,Ringsby) -> NULL
+[218]: (Helena An Haaland,Haarr) -> NULL
+[220]: (Raisa,Raihan) -> (Julie Bao Thi,Tran) -> NULL
+[224]: (Magnus Næssan,Gaarder) -> (Elias André,Willumsen) -> NULL
+[225]: (Edvard Emmanuel,Klavenes) -> NULL
+[232]: (Andreas,Madsen) -> NULL
+[236]: (Zainab Mahduda,Sherpour) -> NULL
+[238]: (Regine,Hjelmtveit) -> NULL
+[239]: (Piranavan,Visvalingam) -> NULL
+[240]: (Benjamin Jiemin Qin,Berild) -> NULL
+[241]: (Nora Lilliedahl,Kirknes) -> (Jan-Einar,Halla) -> (Cecilie,Vu) -> NULL
+[245]: (Tri Tac,Le) -> NULL
+[246]: (Maamoun Adnan,Hmaidoush) -> NULL
+[248]: (Galina,Kristensen) -> (Sverre Grønhaug,Halvorsen) -> (Kasper Gjesdal,Hansen) -> NULL
+[249]: (Hector,Mendana Morales) -> NULL
+
+
+Collisions only:
+[1]: (Aleksandrs,Broks) -> (Fredrik Tolås,Borbe) -> (Eskild,Smestu) -> NULL
+[9]: (Thea Marie Alver,Lønvik) -> (Anine Selle,Standnes) -> NULL
+[19]: (Serghii,Dykyy) -> (Marcus,Westum) -> NULL
+[84]: (William Laukvik,Holtsdalen) -> (Kristian Ask,Selmer) -> (Henrik,Sund) -> NULL
+[88]: (Hel Eline,Larsen) -> (Solveig Maria,Jørgensen) -> (Trym Olaf Huneide,Pedersen) -> NULL
+[92]: (Wayan Satria,Krabseth) -> (Axel Aartun,Hansson) -> NULL
+[104]: (Pyotr,Karbovskiy-Kjellman) -> (Mikael Stray,Frøyshov) -> (Maria Kristin,Olafsdottir) -> (Audun Nåvik,Rosvold) -> NULL
+[108]: (Jon,Bergland) -> (Tor Arne,Birkeland) -> (Durva,Parmar) -> NULL
+[128]: (Markus Nikolai,Hagen) -> (Filip Engan,Ræder) -> NULL
+[136]: (Alexander Tawan Atjanthuek,Johnsen) -> (Vetle,Nilsen) -> NULL
+[144]: (Oskar Hoddø,Lindh) -> (Petter Tjelde,Vaagen) -> NULL
+[184]: (Benjamin,Kvello-Hansen) -> (Aleksander Hjortkær Sand,Evensen) -> NULL
+[207]: (Trang Minh,Duong) -> (Ole-Kristian,Wigum) -> NULL
+[217]: (Alexander Oddsen,Arne) -> (Viggo Peter Edgar,Ringsby) -> NULL
+[220]: (Raisa,Raihan) -> (Julie Bao Thi,Tran) -> NULL
+[224]: (Magnus Næssan,Gaarder) -> (Elias André,Willumsen) -> NULL
+[241]: (Nora Lilliedahl,Kirknes) -> (Jan-Einar,Halla) -> (Cecilie,Vu) -> NULL
+[248]: (Galina,Kristensen) -> (Sverre Grønhaug,Halvorsen) -> (Kasper Gjesdal,Hansen) -> NULL
+
+Found: Gustav Haverstad,Skyberg
+Load factor: 0.46
+Collision rate: 0.32

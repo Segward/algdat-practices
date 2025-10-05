@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 typedef struct node_s node_t;
 
@@ -18,7 +19,7 @@ typedef struct {
 } hashmap_t;
 
 unsigned int hash(char *key, size_t capacity) {
-  unsigned int sum = 0;
+  unsigned int sum = 59;
   for (int i = 0; key[i] != '\0'; i++) {
     sum += sum * 37 + key[i];
   }
@@ -120,8 +121,6 @@ void hashmap_dump(hashmap_t *map, int collisions) {
     printf("NULL\n");
   }
 }
-
-
 
 int main(int argc, char *argv[]) {
   FILE *file = fopen("navn.txt", "r");
