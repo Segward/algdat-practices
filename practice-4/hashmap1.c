@@ -13,9 +13,9 @@ typedef struct node_s {
 
 typedef struct {
   node_t **nodes;
-  int count;
-  int capacity;
-  int collisions;
+  unsigned int count;
+  unsigned int capacity;
+  unsigned long long collisions;
 } hashmap_t;
 
 unsigned int hash(char *key, size_t capacity) {
@@ -26,25 +26,33 @@ unsigned int hash(char *key, size_t capacity) {
   return hash % capacity;
 }
 
-hashmap_t *hashmap_init(size_t capacity);
-void hashmap_insert(hashmap_t *map, char *key);
-
 void hashmap_expand(hashmap_t *map, size_t new_capacity) {
-  hashmap_t *new_map = hashmap_init(new_capacity);
+  node_t **new_nodes = (node_t **)calloc(new_capacity, sizeof(node_t *));
   for (size_t i = 0; i < map->capacity; i++) {
     node_t *node = map->nodes[i];
     while (node != NULL) {
-      hashmap_insert(new_map, node->key);
-      node = node->next;
+      unsigned int index = hash(node->key, new_capacity);
+      node_t *next = node->next;
+
+      if (new_nodes[index] == NULL) {
+        new_nodes[index] = node;
+        node->next = NULL;
+      } else {
+        node_t *temp = new_nodes[index];
+        while (temp->next != NULL) {
+          temp = temp->next;
+        }
+        temp->next = node;
+        node->next = NULL;
+      }
+
+      node = next;
     }
   }
 
   free(map->nodes);
-  map->nodes = new_map->nodes;
-  map->capacity = new_map->capacity;
-  map->count = new_map->count;
-  map->collisions = new_map->collisions;
-  free(new_map);
+  map->nodes = new_nodes;
+  map->capacity = new_capacity;
 }
 
 hashmap_t *hashmap_init(size_t capacity) {
@@ -167,10 +175,11 @@ int main(int argc, char *argv[]) {
     printf("Not found: %s\n", search_key);
   }
 
-  float load_factor = (float)map->count / map->capacity;
-  printf("Load factor: %.2f\n", load_factor);
-  float collision_rate = (float)map->collisions / map->count;
-  printf("Collision rate: %.2f\n", collision_rate);
+  unsigned long long load_factor = (map->count * 100) / (unsigned long long)map->capacity;
+  unsigned long long collision_rate = (map->collisions * 100) / (unsigned long long)map->count;
+  printf("Load factor: %llu%%\n", load_factor);
+  printf("Collisions: %llu\n", map->collisions);
+  printf("Collision rate: %llu%%\n", collision_rate);
 
   return 0;
 }
