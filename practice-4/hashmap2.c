@@ -4,7 +4,7 @@
 #include <time.h>
 
 #define HASHMAP_SIZE 10000019
-#define TABLE_RATIO 1
+#define TABLE_RATIO 0.7
 
 typedef struct {
   char* key;
