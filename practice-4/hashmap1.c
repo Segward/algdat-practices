@@ -19,29 +19,32 @@ typedef struct {
 } hashmap_t;
 
 unsigned int hash(char *key, size_t capacity) {
-  unsigned int sum = 59;
+  unsigned int hash = 5381;
   for (int i = 0; key[i] != '\0'; i++) {
-    sum += sum * 37 + key[i];
+    hash = hash * 31 + key[i];
   }
-  return sum % capacity;
+  return hash % capacity;
 }
 
+hashmap_t *hashmap_init(size_t capacity);
+void hashmap_insert(hashmap_t *map, char *key);
+
 void hashmap_expand(hashmap_t *map, size_t new_capacity) {
-  node_t **new_nodes = (node_t **)calloc(new_capacity, sizeof(node_t *));
+  hashmap_t *new_map = hashmap_init(new_capacity);
   for (size_t i = 0; i < map->capacity; i++) {
     node_t *node = map->nodes[i];
     while (node != NULL) {
-      unsigned int index = hash(node->key, new_capacity);
-      node_t *next = node->next;
-      node->next = new_nodes[index];
-      new_nodes[index] = node;
-      node = next;
+      hashmap_insert(new_map, node->key);
+      node = node->next;
     }
   }
 
   free(map->nodes);
-  map->nodes = new_nodes;
-  map->capacity = new_capacity;
+  map->nodes = new_map->nodes;
+  map->capacity = new_map->capacity;
+  map->count = new_map->count;
+  map->collisions = new_map->collisions;
+  free(new_map);
 }
 
 hashmap_t *hashmap_init(size_t capacity) {
