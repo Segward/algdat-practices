@@ -81,7 +81,8 @@ void bfs(graph_t *graph, int start) {
     printf("%d\t", i);
     if (predecessor[i] != -1) printf("%d\t", predecessor[i]);
     else printf("\t");
-    printf("%d\n", distance[i]);
+    if (distance[i] != -1) printf("%d\n", distance[i]);
+    else printf("\n");
   }
 
   free(visited);
