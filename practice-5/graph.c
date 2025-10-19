@@ -57,13 +57,13 @@ void bfs(graph_t *graph, int start) {
     predecessor[i] = -1;
   }
 
-  int head = 0, tail = 0;
+  int front = 0, rear = 0;
   visited[start] = 1;
   distance[start] = 0;
-  queue[tail++] = start;
+  queue[rear++] = start;
 
-  while (head < tail) {
-    int node = queue[head++];
+  while (front < rear) {
+    int node = queue[front++];
     node_t *n = &graph->nodes[node];
     for (int i = 0; i < n->size; i++) {
       int neighbor = n->to[i];
@@ -71,17 +71,17 @@ void bfs(graph_t *graph, int start) {
         visited[neighbor] = 1;
         distance[neighbor] = distance[node] + 1;
         predecessor[neighbor] = node;
-        queue[tail++] = neighbor;
+        queue[rear++] = neighbor;
       }
     }
   }
 
-  printf("node\tpre\tdist\t for %s\n", graph->path);
+  printf("Node\tPred\tDist\t%s\n", graph->path);
   for (int i = 0; i < graph->size; i++) {
     printf("%d\t", i);
     if (predecessor[i] != -1) printf("%d\t", predecessor[i]);
-    if (distance[i] != -1) printf("%d\t", distance[i]);
-    printf("\n");
+    else printf("\t");
+    printf("%d\n", distance[i]);
   }
 
   free(visited);
@@ -124,7 +124,7 @@ void topological_sort(graph_t *graph) {
     return;
   }
 
-  printf("topological sort for %s\n", graph->path);
+  printf("topological sort\t%s\n", graph->path);
   for (int i = 0; i < graph->size; i++) 
     printf("%d ", topo_order[i]);
   printf("\n");
