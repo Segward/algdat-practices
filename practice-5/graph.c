@@ -65,7 +65,7 @@ void bfs(graph_t *graph, int start) {
   while (front < rear) {
     int node = queue[front++];
     node_t *n = &graph->nodes[node];
-    for (int i = 0; i < n->size; i++) {
+    for (int i = n->size - 1; i >= 0; i--) {
       int neighbor = n->to[i];
       if (!visited[neighbor]) {
         visited[neighbor] = 1;
@@ -100,7 +100,7 @@ void topological_sort(graph_t *graph) {
     for (int j = 0; j < n->size; j++) in_degree[n->to[j]]++;
   }
 
-  for (int i = 0; i < graph->size; i++) {
+  for (int i = graph->size - 1; i >= 0; i--) {
     if (in_degree[i] == 0) queue[tail++] = i;
   }
 
@@ -111,10 +111,10 @@ void topological_sort(graph_t *graph) {
     int node = queue[head++];
     topo_order[count++] = node;
     node_t *n = &graph->nodes[node];
-    for (int i = 0; i < n->size; i++) {
+    for (int i = n->size - 1; i >= 0; i--) {
       int neighbor = n->to[i];
       in_degree[neighbor]--;
-      if (in_degree[neighbor] == 0) 
+      if (in_degree[neighbor] == 0)
         queue[tail++] = neighbor;
     }
   }
