@@ -11,15 +11,8 @@ typedef struct {
 typedef struct {
   node_t *nodes;
   int size;
+  const char *path;
 } graph_t;
-
-void graph_append(graph_t *graph, int from, int to) {
-  node_t *node = &graph->nodes[from];
-  int *new_to = realloc(node->to, (node->size + 1) * sizeof(int));
-  node->to = new_to;
-  node->to[node->size] = to;
-  node->size++;
-}
 
 graph_t *file_to_graph(const char *path) {
   FILE *f = fopen(path, "r");
@@ -38,10 +31,15 @@ graph_t *file_to_graph(const char *path) {
   graph_t *graph = calloc(1, sizeof(graph_t));
   graph->nodes = calloc(node_size, sizeof(node_t));
   graph->size = node_size;
+  graph->path = path;
 
   int from, to;
   while (fscanf(f, "%d %d", &from, &to) == 2) {
-    graph_append(graph, from, to);
+    node_t *node = &graph->nodes[from];
+    int *new_to = realloc(node->to, (node->size + 1) * sizeof(int));
+    node->to = new_to;
+    node->to[node->size] = to;
+    node->size++;
   }
 
   fclose(f);
@@ -49,8 +47,6 @@ graph_t *file_to_graph(const char *path) {
 }
 
 void bfs(graph_t *graph, int start) {
-  if (!graph || start < 0 || start >= graph->size) return;
-
   int *visited = calloc(graph->size, sizeof(int));
   int *queue = calloc(graph->size, sizeof(int));
   int *distance = malloc(graph->size * sizeof(int));
@@ -61,13 +57,13 @@ void bfs(graph_t *graph, int start) {
     predecessor[i] = -1;
   }
 
-  int front = 0, rear = 0;
+  int head = 0, tail = 0;
   visited[start] = 1;
   distance[start] = 0;
-  queue[rear++] = start;
+  queue[tail++] = start;
 
-  while (front < rear) {
-    int node = queue[front++];
+  while (head < tail) {
+    int node = queue[head++];
     node_t *n = &graph->nodes[node];
     for (int i = 0; i < n->size; i++) {
       int neighbor = n->to[i];
@@ -75,12 +71,12 @@ void bfs(graph_t *graph, int start) {
         visited[neighbor] = 1;
         distance[neighbor] = distance[node] + 1;
         predecessor[neighbor] = node;
-        queue[rear++] = neighbor;
+        queue[tail++] = neighbor;
       }
     }
   }
 
-  printf("node\tpre\tdistance\n");
+  printf("node\tpre\tdist\t for %s\n", graph->path);
   for (int i = 0; i < graph->size; i++) {
     printf("%d\t", i);
     if (predecessor[i] != -1) printf("%d\t", predecessor[i]);
@@ -97,7 +93,7 @@ void bfs(graph_t *graph, int start) {
 void topological_sort(graph_t *graph) {
   int *in_degree = calloc(graph->size, sizeof(int));
   int *queue = calloc(graph->size, sizeof(int));
-  int front = 0, rear = 0;
+  int head = 0, tail = 0;
 
   for (int i = 0; i < graph->size; i++) {
     node_t *n = &graph->nodes[i];
@@ -105,32 +101,33 @@ void topological_sort(graph_t *graph) {
   }
 
   for (int i = 0; i < graph->size; i++) {
-    if (in_degree[i] == 0) queue[rear++] = i;
+    if (in_degree[i] == 0) queue[tail++] = i;
   }
 
   int count = 0;
   int *topo_order = malloc(graph->size * sizeof(int));
 
-  while (front < rear) {
-    int node = queue[front++];
+  while (head < tail) {
+    int node = queue[head++];
     topo_order[count++] = node;
     node_t *n = &graph->nodes[node];
     for (int i = 0; i < n->size; i++) {
       int neighbor = n->to[i];
       in_degree[neighbor]--;
       if (in_degree[neighbor] == 0) 
-        queue[rear++] = neighbor;
+        queue[tail++] = neighbor;
     }
   }
 
   if (count != graph->size) {
-    printf("Graph is not a DAG. Topological sort impossible.\n");
-  } else {
-    printf("Topological order:\n");
-    for (int i = 0; i < graph->size; i++) 
-      printf("%d ", topo_order[i]);
-    printf("\n");
+    printf("Graph is not a DAG\n");
+    return;
   }
+
+  printf("topological sort for %s\n", graph->path);
+  for (int i = 0; i < graph->size; i++) 
+    printf("%d ", topo_order[i]);
+  printf("\n");
 
   free(in_degree);
   free(queue);
