@@ -243,6 +243,31 @@ int decompress(const char *input, const char *output) {
     return 1;
   }
 
+  unsigned freq[256];
+  if (fread(freq, sizeof(unsigned), 256, in) != 256) {
+    perror("Error file read");
+    fclose(in);
+    fclose(out);
+    return 1;
+  }
+
+  unsigned unique = count_unique(freq);
+  struct huffman_node *root = build_huffman_tree(freq, unique);
+
+  struct huffman_node *node = root;
+  int bit;
+  int c;
+  while ((c = fgetc(in)) != EOF) {
+    for (int i = 7; i >= 0; i--) {
+      bit = (c >> i) & 1;
+      node = bit ? node->right : node->left;
+      if (!node->left && !node->right) {
+        fputc(node->data, out);
+        node = root;
+      }
+    }
+  }
+
   fclose(in);
   fclose(out);
   return 0;
