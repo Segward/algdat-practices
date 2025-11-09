@@ -292,62 +292,92 @@ string decode_from_file(const string &input_path) {
 }
 
 int main(int argc, char **argv) {
-  if (argc != 4) { 
-    cout << "Usage:\n";
-    cout << argv[0] << " -d <input> <output>\n";
-    cout << argv[0] << " -e <input> <output>\n";
-    return 1;
-  }  
+    if (argc < 4) {
+        cout << "Usage:\n";
+        cout << argv[0] << " -d <input> <output>\n";
+        cout << argv[0] << " -e <input> <output>\n";
+        cout << argv[0] << " -d <input> <output> -no-rle\n";
+        cout << argv[0] << " -e <input> <output> -no-rle\n";
+        return 1;
+    }
 
-  const string mode = argv[1];
-  const string input_file = argv[2];
-  const string output_file = argv[3];
+    string mode = argv[1];
+    string input_file = argv[2];
+    string output_file = argv[3];
 
-  if (mode == "-e") {
-    ifstream in(input_file, ios::binary);
-    string input_data((istreambuf_iterator<char>(in)), {});
-    in.close();
+    if (mode == "-e") {
+        ifstream in(input_file, ios::binary);
+        if (!in) {
+            cerr << "Error: Cannot open input file " << input_file << "\n";
+            return 1;
+        }
 
-    auto [bwt_data, idx] = bwt_encode(input_data);
-    string mtf_data = mtf_encode(bwt_data);
-    string rle_data = rle_encode(mtf_data);
+        auto start_enc = chrono::high_resolution_clock::now();
+        string input_data((istreambuf_iterator<char>(in)), {});
+        in.close();
 
-    string packed(sizeof(uint32_t), '\0');
-    memcpy(packed.data(), &idx, sizeof(uint32_t));
-    packed += rle_data;
+        auto [bwt_data, idx] = bwt_encode(input_data);
+        string mtf_data = mtf_encode(bwt_data);
 
-    auto start_enc = chrono::high_resolution_clock::now();
-    encode_to_file(packed, output_file);
-    auto end_enc = chrono::high_resolution_clock::now();
+        string encoded_data;
+        if (argc == 5 && string(argv[4]) == "-no-rle") {
+            encoded_data = mtf_data;
+        } else {
+            encoded_data = rle_encode(mtf_data);
+        }
 
-    double enc_time = chrono::duration<double>(end_enc - start_enc).count();
-    cout << "Encoding time: " << enc_time << "s\n";
-  } 
+        string packed(sizeof(uint32_t), '\0');
+        memcpy(packed.data(), &idx, sizeof(uint32_t));
+        packed += encoded_data;
 
-  else if (mode == "-d") {
-    auto start_dec = chrono::high_resolution_clock::now();
-    string decoded_bytes = decode_from_file(input_file);
-    auto end_dec = chrono::high_resolution_clock::now();
+        encode_to_file(packed, output_file);
 
-    uint32_t primary = *reinterpret_cast<const uint32_t*>(decoded_bytes.data());
-    string rle_decoded = rle_decode(decoded_bytes.substr(sizeof(uint32_t)));
-    string mtf_decoded = mtf_decode(rle_decoded);
-    string restored = bwt_decode(mtf_decoded, primary);
+        auto end_enc = chrono::high_resolution_clock::now();
+        double enc_time = chrono::duration<double>(end_enc - start_enc).count();
+        cout << "Encoding time: " << enc_time << "s\n";
+    }
 
-    ofstream out(output_file, ios::binary);
-    out.write(restored.data(), restored.size());
-    out.close();
+    else if (mode == "-d") {
+        auto start_dec = chrono::high_resolution_clock::now();
+        string decoded_bytes = decode_from_file(input_file);
 
-    double dec_time = chrono::duration<double>(end_dec - start_dec).count();
-    cout << "Decoding time: " << dec_time << "s\n";
-  } 
+        if (decoded_bytes.size() < sizeof(uint32_t)) {
+            cerr << "Error: Corrupted input file\n";
+            return 1;
+        }
 
-  else {
-    cout << "Usage:\n";
-    cout << argv[0] << " -d <input> <output>\n";
-    cout << argv[0] << " -e <input> <output>\n";
-    return 1;
-  }
+        uint32_t primary;
+        memcpy(&primary, decoded_bytes.data(), sizeof(uint32_t));
+        string body = decoded_bytes.substr(sizeof(uint32_t));
 
-  return 0;
+        string mtf_input;
+        if (argc == 5 && string(argv[4]) == "-no-rle") {
+            mtf_input = body;
+        } else {
+            mtf_input = rle_decode(body);
+        }
+
+        string mtf_decoded = mtf_decode(mtf_input);
+        string restored = bwt_decode(mtf_decoded, primary);
+
+        ofstream out(output_file, ios::binary);
+        out.write(restored.data(), restored.size());
+        out.close();
+
+        auto end_dec = chrono::high_resolution_clock::now();
+        double dec_time = chrono::duration<double>(end_dec - start_dec).count();
+        cout << "Decoding time: " << dec_time << "s\n";
+    }
+
+    else {
+        cout << "Usage:\n";
+        cout << argv[0] << " -d <input> <output>\n";
+        cout << argv[0] << " -e <input> <output>\n";
+        cout << argv[0] << " -d <input> <output> -no-rle\n";
+        cout << argv[0] << " -e <input> <output> -no-rle\n";
+        return 1;
+    }
+
+    return 0;
 }
+
