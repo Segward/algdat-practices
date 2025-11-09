@@ -12,7 +12,7 @@
 
 using namespace std;
 
-static vector<int> build_cyclic_sa(const string& s) {
+static vector<int> build_sa(const string& s) {
   const int n = static_cast<int>(s.size());
   vector<int> sa(n);
   for (int i = 0; i < n; ++i) sa[i] = i;
@@ -31,7 +31,7 @@ static pair<string, uint32_t> bwt_encode(const string &input) {
   const size_t n = input.size();
   if (n == 0) return {"", 0};
 
-  vector<int> sa = build_cyclic_sa(input);
+  vector<int> sa = build_sa(input);
   string L(n, '\0');
   uint32_t primary = 0;
 
@@ -99,6 +99,51 @@ static string mtf_decode(const string &input) {
     table.insert(table.begin(), c);
   }
   return output;
+}
+
+static string rle_encode(const string &input) {
+    string output;
+    output.reserve(input.size());
+
+    int zero_run = 0;
+    for (unsigned char c : input) {
+        if (c == 0) {
+            ++zero_run;
+            if (zero_run == 255) {
+                output.push_back(0);
+                output.push_back(static_cast<unsigned char>(zero_run));
+                zero_run = 0;
+            }
+        } else {
+            if (zero_run > 0) {
+                output.push_back(0);
+                output.push_back(static_cast<unsigned char>(zero_run));
+                zero_run = 0;
+            }
+            output.push_back(c);
+        }
+    }
+    if (zero_run > 0) {
+        output.push_back(0);
+        output.push_back(static_cast<unsigned char>(zero_run));
+    }
+    return output;
+}
+
+static string rle_decode(const string &input) {
+    string output;
+    output.reserve(input.size());
+
+    for (size_t i = 0; i < input.size();) {
+        unsigned char c = input[i++];
+        if (c == 0 && i < input.size()) {
+            unsigned char run_len = input[i++];
+            output.append(run_len, '\0');
+        } else {
+            output.push_back(c);
+        }
+    }
+    return output;
 }
 
 queue<char> bit_buffer;
@@ -265,10 +310,11 @@ int main(int argc, char **argv) {
 
     auto [bwt_data, idx] = bwt_encode(input_data);
     string mtf_data = mtf_encode(bwt_data);
+    string rle_data = rle_encode(mtf_data);
 
     string packed(sizeof(uint32_t), '\0');
     memcpy(packed.data(), &idx, sizeof(uint32_t));
-    packed += mtf_data;
+    packed += rle_data;
 
     auto start_enc = chrono::high_resolution_clock::now();
     encode_to_file(packed, output_file);
@@ -284,7 +330,8 @@ int main(int argc, char **argv) {
     auto end_dec = chrono::high_resolution_clock::now();
 
     uint32_t primary = *reinterpret_cast<const uint32_t*>(decoded_bytes.data());
-    string mtf_decoded = mtf_decode(decoded_bytes.substr(sizeof(uint32_t)));
+    string rle_decoded = rle_decode(decoded_bytes.substr(sizeof(uint32_t)));
+    string mtf_decoded = mtf_decode(rle_decoded);
     string restored = bwt_decode(mtf_decoded, primary);
 
     ofstream out(output_file, ios::binary);
